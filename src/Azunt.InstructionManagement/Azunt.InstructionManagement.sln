@@ -1,0 +1,38 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 18
+VisualStudioVersion = 18.7.11911.148
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Azunt.InstructionManagement", "Azunt.InstructionManagement\Azunt.InstructionManagement.csproj", "{15C072D5-99CD-4004-B46F-61E2D27472D4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Azunt.Web", "Azunt.Web\Azunt.Web.csproj", "{C3E00FEF-5AA3-438F-AA68-2A4DD86ECC17}"
+EndProject
+Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "Azunt.SqlServer", "Azunt.SqlServer\Azunt.SqlServer.sqlproj", "{04AF3019-3014-4A50-87A1-ADB97205CDD3}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{15C072D5-99CD-4004-B46F-61E2D27472D4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{15C072D5-99CD-4004-B46F-61E2D27472D4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{15C072D5-99CD-4004-B46F-61E2D27472D4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{15C072D5-99CD-4004-B46F-61E2D27472D4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C3E00FEF-5AA3-438F-AA68-2A4DD86ECC17}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C3E00FEF-5AA3-438F-AA68-2A4DD86ECC17}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C3E00FEF-5AA3-438F-AA68-2A4DD86ECC17}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C3E00FEF-5AA3-438F-AA68-2A4DD86ECC17}.Release|Any CPU.Build.0 = Release|Any CPU
+		{04AF3019-3014-4A50-87A1-ADB97205CDD3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{04AF3019-3014-4A50-87A1-ADB97205CDD3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{04AF3019-3014-4A50-87A1-ADB97205CDD3}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{04AF3019-3014-4A50-87A1-ADB97205CDD3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{04AF3019-3014-4A50-87A1-ADB97205CDD3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{04AF3019-3014-4A50-87A1-ADB97205CDD3}.Release|Any CPU.Deploy.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {071ABB8B-7BD9-48B3-9D09-349DBB8A1059}
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,222 @@
+@page "/Instructions"
+@page "/Instructions/Manage"
+
+@namespace Azunt.Web.Pages.Instructions
+@using Microsoft.AspNetCore.Components.Web
+@using Microsoft.FluentUI.AspNetCore.Components
+@rendermode InteractiveServer
+
+<h3 class="mt-1 mb-1 d-flex justify-content-between align-items-center">
+    <span class="d-flex align-items-center">
+        Instructions
+        <button type="button" class="btn btn-sm btn-primary ms-2" @onclick="ShowEditorForm">Add New</button>
+    </span>
+
+    <span class="d-flex align-items-center">
+        <FluentButton IconEnd="@(new Icons.Regular.Size16.Table())"
+                      Appearance="Appearance.Accent"
+                      OnClick="ExportExcel"
+                      Class="align-middle"
+                      Style="height: 32px; padding-top: 4px;">
+            Excel Export
+        </FluentButton>
+    </span>
+</h3>
+
+<div class="row">
+    <div class="col-md-12">
+        @if (models == null)
+        {
+            <p>Loading...</p>
+        }
+        else
+        {
+            <div class="table-responsive instruction-table-wrapper">
+                <table class="table table-bordered table-hover align-middle instruction-table">
+                    <colgroup>
+                        <col style="width: 220px;" />
+                        <col style="width: 650px;" />
+                        <col style="width: 180px;" />
+                        <col style="width: 100px;" />
+                        <col style="width: 200px;" />
+                    </colgroup>
+
+                    <thead class="thead-light">
+                        <tr>
+                            <th class="text-center text-nowrap"
+                                @onclick="@(() => SortBy(nameof(Azunt.InstructionManagement.Instruction.Name)))"
+                                style="cursor: pointer;">
+                                Name <Azunt.Components.Sorting.SortOrderArrow SortColumn="Name" SortOrder="@sortOrder" />
+                            </th>
+
+                            <th class="text-center"
+                                @onclick="@(() => SortBy(nameof(Azunt.InstructionManagement.Instruction.Content)))"
+                                style="cursor: pointer;">
+                                Content <Azunt.Components.Sorting.SortOrderArrow SortColumn="Content" SortOrder="@sortOrder" />
+                            </th>
+
+                            <th class="text-center text-nowrap"
+                                @onclick="@(() => SortBy(nameof(Azunt.InstructionManagement.Instruction.CreatedAt)))"
+                                style="cursor: pointer;">
+                                Created <Azunt.Components.Sorting.SortOrderArrow SortColumn="CreatedAt" SortOrder="@sortOrder" />
+                            </th>
+
+                            <th class="text-center text-nowrap">Active</th>
+                            <th class="text-center text-nowrap">Actions</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @if (models.Count == 0)
+                        {
+                            <tr>
+                                <td colspan="5" class="text-center">No data.</td>
+                            </tr>
+                        }
+                        else
+                        {
+                            @foreach (var m in models)
+                            {
+                                <tr>
+                                    <td class="text-nowrap instruction-name-cell">
+                                        <strong>@m.Name</strong>
+                                    </td>
+
+                                    <td class="instruction-content-cell">
+                                        @if (string.IsNullOrWhiteSpace(m.Content))
+                                        {
+                                            <textarea class="form-control instruction-content-viewer text-muted"
+                                                      rows="7"
+                                                      readonly
+                                                      placeholder="No content"></textarea>
+                                        }
+                                        else
+                                        {
+                                            <textarea class="form-control instruction-content-viewer"
+                                                      rows="7"
+                                                      readonly>@m.Content</textarea>
+                                        }
+                                    </td>
+
+                                    <td class="text-center text-nowrap small">
+                                        @ShowTimeOrDate(m.CreatedAt)
+                                    </td>
+
+                                    <td class="text-center">
+                                        <input type="checkbox" checked="@(m.Active == true)" disabled />
+                                    </td>
+
+                                    <td class="text-center text-nowrap">
+                                        <button class="btn btn-sm btn-primary" @onclick="() => EditBy(m)">Edit</button>
+                                        <button class="btn btn-sm btn-danger" @onclick="() => DeleteBy(m)">Del</button>
+                                        <button class="btn btn-sm btn-warning" @onclick="() => ToggleBy(m)">Active</button>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+
+    <div class="col-md-12">
+        <Azunt.Components.Paging.Pager Model="pager" PageIndexChanged="PageIndexChanged" />
+    </div>
+
+    <div class="col-md-12">
+        <Azunt.Components.Search.SearchBox placeholder="Search Instructions..." SearchQueryChanged="Search" />
+    </div>
+</div>
+
+<Azunt.Web.Components.Pages.Instructions.Components.ModalForm @ref="EditorFormReference"
+                                                         ModelSender="model"
+                                                         CreateCallback="CreateOrEdit"
+                                                         EditCallback="CreateOrEdit"
+                                                         UserName="@UserName">
+    <EditorFormTitle>@EditorFormTitle</EditorFormTitle>
+</Azunt.Web.Components.Pages.Instructions.Components.ModalForm>
+
+@if (IsDeleteDialogShow)
+{
+    <div class="modal fade show d-block" tabindex="-1" role="dialog" style="background-color: rgba(0, 0, 0, 0.5);">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content shadow">
+                <div class="modal-header">
+                    <h5 class="modal-title">Delete Instruction</h5>
+                    <button type="button" class="btn-close" aria-label="Close" @onclick="DeleteClose"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to delete <strong>@model.Name</strong>?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" @onclick="DeleteClick">Yes, Delete</button>
+                    <button type="button" class="btn btn-secondary" @onclick="DeleteClose">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@if (IsInlineDialogShow)
+{
+    <div class="modal fade show d-block" tabindex="-1" role="dialog" style="background-color: rgba(0, 0, 0, 0.5);">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content shadow">
+                <div class="modal-header">
+                    <h5 class="modal-title">Change Active State</h5>
+                    <button type="button" class="btn-close" aria-label="Close" @onclick="ToggleClose"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Do you want to change the Active state of <strong>@model.Name</strong>?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" @onclick="ToggleClick">Yes, Change</button>
+                    <button type="button" class="btn btn-secondary" @onclick="ToggleClose">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<style>
+    .instruction-table-wrapper {
+        min-height: 400px;
+        overflow-x: auto;
+    }
+
+    .instruction-table {
+        min-width: 1350px;
+        table-layout: fixed;
+    }
+
+    .instruction-name-cell {
+        max-width: 220px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        vertical-align: top;
+    }
+
+    .instruction-content-cell {
+        vertical-align: top;
+    }
+
+    .instruction-content-viewer {
+        width: 100%;
+        min-height: 96px;
+        max-height: 180px;
+        overflow: auto;
+        resize: both;
+        white-space: pre;
+        font-family: Consolas, "Courier New", monospace;
+        font-size: 0.875rem;
+        line-height: 1.4;
+        background-color: #f8f9fa;
+        cursor: default;
+    }
+
+        .instruction-content-viewer:focus {
+            box-shadow: none;
+            border-color: #ced4da;
+        }
+</style>

@@ -1,0 +1,25 @@
+@using Azunt.InstructionManagement
+@inject IInstructionRepository RepositoryReference
+
+<select class="form-select" @bind="SelectedValue">
+    <option value="">-- Select Instruction --</option>
+    @foreach (var instruction in instructions)
+    {
+        <option value="@instruction.Name">@instruction.Name</option>
+    }
+</select>
+
+@code {
+    private List<Instruction> instructions = new();
+
+    [Parameter]
+    public string? SelectedValue { get; set; }
+
+    [Parameter]
+    public EventCallback<string?> SelectedValueChanged { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        instructions = await RepositoryReference.GetAllAsync();
+    }
+}
